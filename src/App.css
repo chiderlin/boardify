@@ -36,3 +36,97 @@
     transform: rotate(360deg);
   }
 }
+/* --------------------------- */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #8e8e8e;
+}
+
+.body {
+  display: flex;
+  /* FIXME: js偵測螢幕高度，加height, */
+  height: 850px;
+  overflow-x: auto;
+  padding: 10px;
+  /* max-height: 100vh; */
+  /* box-sizing: border-box; */
+  /* white-space: nowrap; */
+}
+
+.header {
+  height: 80px;
+  background-size: cover;
+  background-color: yellowgreen;
+  padding: 20px; /*本身內縮*/
+  min-width: 100%;
+}
+
+/* .box {
+  min-width: 300px;
+  background-color: black;
+  min-width: 300px;
+  height: 60%;
+  margin: 10px;
+  border-radius: 20px;
+  place-items: center;
+} */
+
+.box-title {
+  padding-top: 50px;
+}
+
+.box-todo {
+  width: 100%;
+  height: 80%;
+  background-color: #84c1ff;
+  overflow-x: auto;
+  place-items: center;
+}
+
+.box-bottom {
+  padding-bottom: 50px;
+}
+
+.todo {
+  width: 90%;
+  height: 50px;
+  background-color: #d0d0d0;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+}
+
+.todo:hover {
+  outline: 1px solid white;
+  /*border會有移動感，先不要*/
+  /* border: 1px solid blue; */
+  cursor: pointer;
+}
+
+.addboxbtn {
+  /* height: 50px; */
+  width: 300px;
+  min-width: 300px;
+  border-radius: 10px;
+  background-color: #bebebe;
+  opacity: 0.8;
+  font-weight: bold;
+}
+
+.addboxbtn:hover {
+  /*todo已經設定 這邊會繼承*/
+  /* cursor: pointer; */
+  opacity: 0.5;
+}
