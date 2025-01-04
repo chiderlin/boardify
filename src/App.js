@@ -48,6 +48,7 @@ function App(props) {
       x: e.clientX - position.x,
       y: e.clientY - position.y,
     });
+    setDraggingBoxId(bid);
   };
 
   return (
@@ -58,7 +59,7 @@ function App(props) {
       <div className="header">header</div>
       <div className="body" onMouseMove={onMouseMove} onMouseUp={onMouseUp}>
         <Box
-          isDragging={isDragging}
+          isDragging={isDragging && draggingBoxId === '1'}
           bid="1"
           onMouseDown={(e) => onMouseDown(e, '1')}
         >
@@ -72,7 +73,11 @@ function App(props) {
 
           <div className="box-bottom">tttt</div>
         </Box>
-        <Box bid="2" onMouseDown={(e) => onMouseDown(e, '2')}>
+        <Box
+          isDragging={isDragging && draggingBoxId === '2'}
+          bid="2"
+          onMouseDown={(e) => onMouseDown(e, '2')}
+        >
           <div className="box-title"></div>
           <div className="box-todo">
             <div className="todo">todo</div>
@@ -83,7 +88,11 @@ function App(props) {
 
           <div className="box-bottom"></div>
         </Box>
-        <Box bid="3" onMouseDown={(e) => onMouseDown(e, '3')}>
+        <Box
+          isDragging={isDragging && draggingBoxId === '3'}
+          bid="3"
+          onMouseDown={(e) => onMouseDown(e, '3')}
+        >
           <div className="box-title"></div>
           <div className="box-todo">
             <div className="todo">todo</div>
