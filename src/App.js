@@ -5,10 +5,15 @@ import 'styled-components';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
+//FIXME: box隨著todo的增加，加長空間
+
+/*transform: ${(props) =>
+  props.isDragging ? 'rotate(10deg)' : 'rotate(0deg);'};
+  opacity: ${(props) => (props.isDragging ? '0.7' : '1')};
+*/
 const Box = styled.div`
   min-width: 300px;
   background-color: black;
-  height: 10%;
   margin: 10px;
   border-radius: 20px;
   place-items: center;
@@ -16,20 +21,19 @@ const Box = styled.div`
   flex-direction: column; // let AddATask at the bottom of the box
   justify-content: flex-start; // let AddATask at the bottom of the box
   cursor: ${(props) => (props.isDragging ? 'default' : 'pointer')};
-  transform: ${(props) =>
-    props.isDragging ? 'rotate(10deg)' : 'rotate(0deg);'};
-  opacity: ${(props) => (props.isDragging ? '0.7' : '1')};
+  height: auto;
 `;
 
-const AddATask = styled.div`
+const AddATaskBtn = styled.div`
   min-width: 300px;
-  height: 40%;
+  height: 50px;
   background-color: black;
   color: white;
   display: grid; // let text center
   place-items: center; // let text center
   border-radius: 20px;
   margin-top: auto;
+  cursor: pointer;
   &:hover {
     background-color: #7b7b7b;
   }
@@ -53,9 +57,10 @@ function App(props) {
   const [draggingBoxId, setDraggingBoxId] = useState(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [boxes, setBoxes] = useState([]); // track all created boxes
+  const [todoTasks, setTodoTasks] = useState([]); // hold all todos
+  const [todosByBox, setTodosByBox] = useState({}); // object to track todos by box
 
   // TODO: 移動box
-  //TODO: add box
   const onMouseMove = (e) => {
     if (isDragging) {
       setPosition({
@@ -90,11 +95,36 @@ function App(props) {
       console.log('btn y: ', rect.y);
       const newBox = {
         id: boxes.length + 1,
-        x: rect.x,
+        x: rect.x + boxes.length * 310,
         y: rect.y,
       };
       setBoxes([...boxes, newBox]);
     }
+  };
+
+  const handleAddTasks = (boxId) => {
+    const newTodo = {
+      id: new Date().getTime(),
+      content: `New Task for Box ${boxId}`,
+    };
+    /*
+    const todosByBox = {
+      box1: [{ id: 1, name: '任務 1' }, { id: 2, name: '任務 2' }],
+      box2: [{ id: 3, name: '任務 3' }],
+    };
+    */
+
+    setTodosByBox((prevTodos) => {
+      const updatedTodos = prevTodos[boxId]
+        ? [...prevTodos[boxId], newTodo]
+        : [newTodo];
+      return {
+        ...prevTodos,
+        [boxId]: updatedTodos,
+      };
+    });
+    // 全部todos管理，之後看還需不需要
+    setTodoTasks([...todoTasks, newTodo]);
   };
 
   return (
@@ -159,8 +189,21 @@ function App(props) {
             key={box.id}
             x={box.x}
             y={box.y}
+            // fix: 讓每個box render自己的長度 => +移動rect位置
+            style={{
+              position: 'absolute',
+              left: `${box.x}px`,
+              top: `${box.y}px`,
+            }}
           >
-            <AddATask>+ Add a Task</AddATask>
+            <div>{box.name}</div>
+            {/* ?. 不會報錯，會return undefined */}
+            {todosByBox[box.id]?.map((todo) => (
+              <TodoTask key={todo.id}>{todo.content}</TodoTask>
+            ))}
+            <AddATaskBtn onClick={() => handleAddTasks(box.id)}>
+              + Add a Task
+            </AddATaskBtn>
           </Box>
         ))}
         {/* FIXME：套用兩個class其他方法？ */}

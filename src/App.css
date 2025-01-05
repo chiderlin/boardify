@@ -55,7 +55,8 @@ body {
 .body {
   display: flex;
   /* FIXME: js偵測螢幕高度，加height, */
-  height: 850px;
+  /* 本來設850, 變成box在default會太長 */
+  height: auto;
   overflow-x: auto;
   padding: 10px;
   /* max-height: 100vh; */

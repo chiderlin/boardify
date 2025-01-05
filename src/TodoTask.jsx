@@ -10,6 +10,7 @@ const Todo = styled.div`
   justify-content: center;
   align-items: center;
   margin: 10px;
+  flex-grow: 0;
 
   &:hover {
     outline: 1px solid white;
