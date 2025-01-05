@@ -9,15 +9,16 @@ import styled from 'styled-components';
   props.isDragging ? 'rotate(10deg)' : 'rotate(0deg);'};
   opacity: ${(props) => (props.isDragging ? '0.7' : '1')};
 */
+
+//place-items: center;
 const Box = styled.div`
   min-width: 300px;
   background-color: black;
-  margin: 10px;
   border-radius: 20px;
-  place-items: center;
   display: flex; // let AddATask at the bottom of the box
   flex-direction: column; // let AddATask at the bottom of the box
   justify-content: flex-start; // let AddATask at the bottom of the box
+  align-items: center;
   cursor: ${(props) => (props.isDragging ? 'default' : 'pointer')};
   height: auto;
 `;
@@ -29,7 +30,7 @@ const AddATaskBtn = styled.div`
   color: white;
   display: grid; // let text center
   place-items: center; // let text center
-  border-radius: 20px;
+  border-radius: 10px;
   margin-top: auto;
   cursor: pointer;
   &:hover {
@@ -38,14 +39,21 @@ const AddATaskBtn = styled.div`
 `;
 
 const AddBoxBtn = styled.div`
+  margin-top: 10px;
   width: 300px;
   min-width: 300px;
   border-radius: 10px;
   background-color: #bebebe;
   opacity: 0.8;
   font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
+  left: 0;
   &:hover {
-    pacity: 0.5;
+    opacity: 0.5;
   }
 `;
 
@@ -93,9 +101,10 @@ function App(props) {
       console.log('btn y: ', rect.y);
       const newBox = {
         id: boxes.length + 1,
-        x: rect.x + boxes.length * 310,
+        x: rect.x,
         y: rect.y,
       };
+      console.log(newBox);
       setBoxes([...boxes, newBox]);
     }
   };
@@ -205,7 +214,15 @@ function App(props) {
           </Box>
         ))}
         {/* FIXME：套用兩個class其他方法？ */}
-        <AddBoxBtn className="todo" ref={btnRef} onClick={handleCreateBox}>
+
+        <AddBoxBtn
+          style={{
+            left: `${boxes.length * 320}px`,
+          }}
+          className="todo"
+          ref={btnRef}
+          onClick={handleCreateBox}
+        >
           + Add another list
         </AddBoxBtn>
       </div>
