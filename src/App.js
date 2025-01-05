@@ -5,8 +5,6 @@ import 'styled-components';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
-//FIXME: box隨著todo的增加，加長空間
-
 /*transform: ${(props) =>
   props.isDragging ? 'rotate(10deg)' : 'rotate(0deg);'};
   opacity: ${(props) => (props.isDragging ? '0.7' : '1')};
