@@ -92,7 +92,6 @@ function App(props) {
     setDraggingBoxId(bid);
   };
 
-  //FIXME: 滾動x軸後，box渲染位置抓不到正確的，會一直卡在螢幕範圍內
   const btnRef = useRef(null);
   const handleCreateBox = (e) => {
     // 取得目前box的座標
@@ -201,7 +200,7 @@ function App(props) {
             // fix: 讓每個box render自己的長度 => +移動rect位置
             style={{
               position: 'absolute',
-              left: `${(box.id - 1) * 310}px`, // fix: 用box.id instead of box.x解決box一直重複問題
+              left: `${(box.id - 1) * 310}px`, // fix: 用box.id instead of box.x解決box一直重疊問題
               // top: `${box.y}px`,
             }}
           >
