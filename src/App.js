@@ -2,12 +2,13 @@ import logo from './logo.svg';
 import './App.css';
 import TodoTask from './TodoTask';
 import 'styled-components';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 /*transform: ${(props) =>
   props.isDragging ? 'rotate(10deg)' : 'rotate(0deg);'};
   opacity: ${(props) => (props.isDragging ? '0.7' : '1')};
+  cursor: ${(props) => (props.isDragging ? 'default' : 'pointer')};
 */
 
 //place-items: center;
@@ -19,7 +20,6 @@ const Box = styled.div`
   flex-direction: column; // let AddATask at the bottom of the box
   justify-content: flex-start; // let AddATask at the bottom of the box
   align-items: center;
-  cursor: ${(props) => (props.isDragging ? 'default' : 'pointer')};
   height: auto;
 `;
 
@@ -92,19 +92,21 @@ function App(props) {
     setDraggingBoxId(bid);
   };
 
+  //FIXME: 滾動x軸後，box渲染位置抓不到正確的，會一直卡在螢幕範圍內
   const btnRef = useRef(null);
-  const handleCreateBox = () => {
+  const handleCreateBox = (e) => {
     // 取得目前box的座標
     if (btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect();
-      console.log('btn x: ', rect.x);
+      const globalX = rect.x + window.scrollX;
+      console.log('btn x: ', globalX);
       console.log('btn y: ', rect.y);
       const newBox = {
         id: boxes.length + 1,
-        x: rect.x,
+        x: globalX,
         y: rect.y,
       };
-      console.log(newBox);
+      console.log('newBox:', newBox);
       setBoxes([...boxes, newBox]);
     }
   };
@@ -191,7 +193,7 @@ function App(props) {
         </Box> */}
         {boxes.map((box) => (
           <Box
-            isDragging={isDragging && draggingBoxId === box.id}
+            // isDragging={isDragging && draggingBoxId === box.id}
             onMouseDown={(e) => onMouseDown(e, box.id)}
             key={box.id}
             x={box.x}
@@ -199,8 +201,8 @@ function App(props) {
             // fix: 讓每個box render自己的長度 => +移動rect位置
             style={{
               position: 'absolute',
-              left: `${box.x}px`,
-              top: `${box.y}px`,
+              left: `${(box.id - 1) * 310}px`, // fix: 用box.id instead of box.x解決box一直重複問題
+              // top: `${box.y}px`,
             }}
           >
             <div>{box.name}</div>
@@ -217,7 +219,7 @@ function App(props) {
 
         <AddBoxBtn
           style={{
-            left: `${boxes.length * 320}px`,
+            left: `${boxes.length * 310}px`,
           }}
           className="todo"
           ref={btnRef}

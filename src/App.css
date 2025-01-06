@@ -56,12 +56,16 @@ body {
   display: flex;
   /* FIXME: js偵測螢幕高度，加height, */
   /* 本來設850, 變成box在default會太長 */
-  height: auto;
-  overflow-x: auto;
+  /* height: auto;
+  overflow-x: auto; */
   padding: 10px;
   /* max-height: 100vh; */
   /* box-sizing: border-box; */
   /* white-space: nowrap; */
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow-x: auto;
 }
 
 .header {
@@ -90,7 +94,7 @@ body {
   width: 100%;
   height: 80%;
   background-color: #84c1ff;
-  overflow-x: auto;
+  /* overflow-x: auto; */
   place-items: center;
 }
 
