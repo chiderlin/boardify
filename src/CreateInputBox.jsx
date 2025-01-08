@@ -79,7 +79,7 @@ function AddListWithClose() {
   } = useBoxContext();
 
   const btnRef = useRef(null);
-  const handleCreateBox = (e) => {
+  const handleCreateBox = () => {
     if (btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect();
       const globalX = rect.x + window.scrollX;
@@ -95,6 +95,7 @@ function AddListWithClose() {
       setShowInputBox(!showInputBox);
     }
   };
+
   return (
     <AddListContainer>
       <ConfirmBtn ref={btnRef} onClick={handleCreateBox}>
@@ -107,8 +108,33 @@ function AddListWithClose() {
   );
 }
 
-export default function CreateInputBox({}) {
-  const { boxes, inputValue, setInputValue } = useBoxContext();
+export default function CreateInputBox() {
+  const {
+    boxes,
+    setBoxes,
+    inputValue,
+    setInputValue,
+    showInputBox,
+    setShowInputBox,
+  } = useBoxContext();
+
+  const inputRef = useRef(null);
+  const handleKeyPress = (e) => {
+    if (inputRef.current && e.key === 'Enter') {
+      const rect = inputRef.current.getBoundingClientRect();
+      const globalX = rect.x + window.scrollX;
+
+      const newBox = {
+        id: boxes.length + 1,
+        x: globalX,
+        y: rect.y,
+        name: inputValue,
+      };
+      setBoxes([...boxes, newBox]);
+      setInputValue(''); // clear the input field
+      setShowInputBox(!showInputBox);
+    }
+  };
 
   return (
     <BoxNaming
@@ -120,6 +146,8 @@ export default function CreateInputBox({}) {
         type="text"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        ref={inputRef}
+        onKeyDown={handleKeyPress}
         placeholder="Enter list name..."
       />
       <AddListWithClose />
