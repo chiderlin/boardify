@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import React, { createContext, useState, useRef, useContext } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import 'styled-components';
-import BoxList from './BoxList';
+import { useBoxContext } from './hook/BoxContext';
 
 const BoxNaming = styled.div`
   margin-top: 10px;
@@ -67,77 +67,6 @@ const ConfirmBtn = styled.div`
   }
 `;
 
-const BoxContext = createContext();
-
-function BoxProvider({ children }) {
-  const [boxes, setBoxes] = useState([]);
-  const [inputValue, setInputValue] = useState('');
-  const [showInputBox, setShowInputBox] = useState(false);
-
-  return (
-    <BoxContext.Provider
-      value={{
-        boxes,
-        setBoxes,
-        inputValue,
-        setInputValue,
-        showInputBox,
-        setShowInputBox,
-      }}
-    >
-      {children}
-    </BoxContext.Provider>
-  );
-}
-
-function CreateInputBox() {
-  const {
-    boxes,
-    setBoxes,
-    inputValue,
-    setInputValue,
-    showInputBox,
-    setShowInputBox,
-  } = useContext(BoxContext);
-
-  const handleAddTasks = (boxId) => {
-    const newTodo = {
-      id: new Date().getTime(),
-      content: `New Task for Box ${boxId}`,
-    };
-    /*
-    架構:
-    const todosByBox = {
-      box1: [{ id: 1, name: '任務 1' }, { id: 2, name: '任務 2' }],
-      box2: [{ id: 3, name: '任務 3' }],
-    };
-    */
-
-    // setTodosByBox((prevTodos) => {
-    //   const updatedTodos = prevTodos[boxId]
-    //     ? [...prevTodos[boxId], newTodo]
-    //     : [newTodo];
-    //   return {
-    //     ...prevTodos,
-    //     [boxId]: updatedTodos,
-    //   };
-    // });
-  };
-
-  return (
-    <BoxNaming>
-      <Input
-        type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        placeholder="Enter list name..."
-      />
-      <AddListWithClose />
-      <BoxList boxes={boxes}></BoxList>
-    </BoxNaming>
-  );
-}
-
 function AddListWithClose() {
   const {
     boxes,
@@ -146,7 +75,7 @@ function AddListWithClose() {
     setInputValue,
     showInputBox,
     setShowInputBox,
-  } = useContext(BoxContext);
+  } = useBoxContext();
 
   const btnRef = useRef(null);
   const handleCreateBox = (e) => {
@@ -158,6 +87,7 @@ function AddListWithClose() {
         id: boxes.length + 1,
         x: globalX,
         y: rect.y,
+        name: inputValue,
       };
       setBoxes([...boxes, newBox]);
       setInputValue(''); // clear the input field
@@ -176,10 +106,18 @@ function AddListWithClose() {
   );
 }
 
-export default function InputBox() {
+export default function CreateInputBox({}) {
+  const { inputValue, setInputValue } = useBoxContext();
+
   return (
-    <BoxProvider>
-      <CreateInputBox />
-    </BoxProvider>
+    <BoxNaming>
+      <Input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder="Enter list name..."
+      />
+      <AddListWithClose />
+    </BoxNaming>
   );
 }

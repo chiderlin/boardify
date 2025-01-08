@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import 'styled-components';
+import { useBoxContext } from './hook/BoxContext';
 
 /*transform: ${(props) =>
   props.isDragging ? 'rotate(10deg)' : 'rotate(0deg);'};
@@ -52,7 +53,21 @@ const AddATaskBtn = styled.div`
   }
 `;
 
-function BoxList({ boxes }) {
+const BoxName = styled.h3`
+  color: white;
+`;
+const BoxNameBlock = styled.div`
+  width: 90%;
+  height: 50px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-grow: 0;
+`;
+
+function BoxList() {
+  const { boxes } = useBoxContext();
   const [todosByBox, setTodosByBox] = useState({}); // object to track todos by box
 
   // TODO: 點擊先input task name, 確認btn才create task card + show task name (enter也可以)
@@ -104,7 +119,9 @@ function BoxList({ boxes }) {
         left: `${(box.id - 1) * 310}px`,
       }}
     >
-      {/* <TodoByBox boxesObj={}> */}
+      <BoxNameBlock>
+        <BoxName>{box.name}</BoxName>
+      </BoxNameBlock>
       {todosByBox[box.id]?.map((todo) => (
         <TodoTask key={todo.id}>{todo.content}</TodoTask>
       ))}
