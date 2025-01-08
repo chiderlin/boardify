@@ -36,15 +36,17 @@ function BoxComponent() {
   return (
     <>
       {/* FIXME：套用兩個class其他方法？ */}
-      <AddBoxBtn
-        style={{
-          left: `${boxes.length * 310}px`,
-        }}
-        className="todo"
-        onClick={handleAddBoxClick}
-      >
-        + Add another list
-      </AddBoxBtn>
+      {!showInputBox && (
+        <AddBoxBtn
+          style={{
+            left: `${boxes.length * 310}px`,
+          }}
+          className="todo"
+          onClick={handleAddBoxClick}
+        >
+          + Add another list
+        </AddBoxBtn>
+      )}
       <BoxList />
       {showInputBox && <InputBox />}
     </>

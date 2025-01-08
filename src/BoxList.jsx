@@ -19,6 +19,7 @@ const Box = styled.div`
   justify-content: flex-start; // let AddATask at the bottom of the box
   align-items: center;
   height: auto;
+  margin: 10px;
 `;
 
 const TodoTask = styled.div`

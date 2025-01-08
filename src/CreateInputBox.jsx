@@ -6,9 +6,8 @@ import 'styled-components';
 import { useBoxContext } from './hook/BoxContext';
 
 const BoxNaming = styled.div`
-  margin-top: 10px;
-  width: 300px;
-  min-width: 300px;
+  width: 290px;
+  min-width: 290px;
   height: 100px;
   border-radius: 10px;
   background-color: #bebebe;
@@ -20,6 +19,8 @@ const BoxNaming = styled.div`
   flex-direction: column;
   padding: 5px;
   gap: 10px;
+  position: absolute;
+  margin: 10px;
 `;
 
 const Input = styled.input`
@@ -107,10 +108,14 @@ function AddListWithClose() {
 }
 
 export default function CreateInputBox({}) {
-  const { inputValue, setInputValue } = useBoxContext();
+  const { boxes, inputValue, setInputValue } = useBoxContext();
 
   return (
-    <BoxNaming>
+    <BoxNaming
+      style={{
+        left: `${boxes.length * 310}px`,
+      }}
+    >
       <Input
         type="text"
         value={inputValue}
