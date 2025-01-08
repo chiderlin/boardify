@@ -1,42 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
-import TodoTask from './TodoTask';
+import InputBox from './CreateInputBox';
 import 'styled-components';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-
-/*transform: ${(props) =>
-  props.isDragging ? 'rotate(10deg)' : 'rotate(0deg);'};
-  opacity: ${(props) => (props.isDragging ? '0.7' : '1')};
-  cursor: ${(props) => (props.isDragging ? 'default' : 'pointer')};
-*/
-
-//place-items: center;
-const Box = styled.div`
-  min-width: 300px;
-  background-color: black;
-  border-radius: 20px;
-  display: flex; // let AddATask at the bottom of the box
-  flex-direction: column; // let AddATask at the bottom of the box
-  justify-content: flex-start; // let AddATask at the bottom of the box
-  align-items: center;
-  height: auto;
-`;
-
-const AddATaskBtn = styled.div`
-  min-width: 300px;
-  height: 50px;
-  background-color: black;
-  color: white;
-  display: grid; // let text center
-  place-items: center; // let text center
-  border-radius: 10px;
-  margin-top: auto;
-  cursor: pointer;
-  &:hover {
-    background-color: #7b7b7b;
-  }
-`;
 
 const AddBoxBtn = styled.div`
   margin-top: 10px;
@@ -57,15 +24,17 @@ const AddBoxBtn = styled.div`
   }
 `;
 
-function App(props) {
+function App() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [draggingBoxId, setDraggingBoxId] = useState(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [boxes, setBoxes] = useState([]); // track all created boxes
-  const [todoTasks, setTodoTasks] = useState([]); // hold all todos
-  const [todosByBox, setTodosByBox] = useState({}); // object to track todos by box
 
+  const [showInputBox, setShowInputBox] = useState(false);
+  const handleAddBoxClick = () => {
+    setShowInputBox(!showInputBox);
+  };
   // TODO: 移動box
   const onMouseMove = (e) => {
     if (isDragging) {
@@ -92,6 +61,7 @@ function App(props) {
     setDraggingBoxId(bid);
   };
 
+  // TODO: 點擊先input box name, 確認btn才createbox + show box name(enter也可以)
   const btnRef = useRef(null);
   const handleCreateBox = (e) => {
     // 取得目前box的座標
@@ -110,35 +80,7 @@ function App(props) {
     }
   };
 
-  const handleAddTasks = (boxId) => {
-    const newTodo = {
-      id: new Date().getTime(),
-      content: `New Task for Box ${boxId}`,
-    };
-    /*
-    const todosByBox = {
-      box1: [{ id: 1, name: '任務 1' }, { id: 2, name: '任務 2' }],
-      box2: [{ id: 3, name: '任務 3' }],
-    };
-    */
-
-    setTodosByBox((prevTodos) => {
-      const updatedTodos = prevTodos[boxId]
-        ? [...prevTodos[boxId], newTodo]
-        : [newTodo];
-      return {
-        ...prevTodos,
-        [boxId]: updatedTodos,
-      };
-    });
-    // 全部todos管理，之後看還需不需要
-    setTodoTasks([...todoTasks, newTodo]);
-  };
-
   return (
-    /**
-     * className="App"原本App.css default裡就設定好了
-     */
     <>
       <div className="header">header</div>
       <div className="body" onMouseMove={onMouseMove} onMouseUp={onMouseUp}>
@@ -190,42 +132,22 @@ function App(props) {
 
           <div className="box-bottom"></div>
         </Box> */}
-        {boxes.map((box) => (
-          <Box
-            // isDragging={isDragging && draggingBoxId === box.id}
-            onMouseDown={(e) => onMouseDown(e, box.id)}
-            key={box.id}
-            x={box.x}
-            y={box.y}
-            // fix: 讓每個box render自己的長度 => +移動rect位置
-            style={{
-              position: 'absolute',
-              left: `${(box.id - 1) * 310}px`, // fix: 用box.id instead of box.x解決box一直重疊問題
-              // top: `${box.y}px`,
-            }}
-          >
-            <div>{box.name}</div>
-            {/* ?. 不會報錯，會return undefined */}
-            {todosByBox[box.id]?.map((todo) => (
-              <TodoTask key={todo.id}>{todo.content}</TodoTask>
-            ))}
-            <AddATaskBtn onClick={() => handleAddTasks(box.id)}>
-              + Add a Task
-            </AddATaskBtn>
-          </Box>
-        ))}
-        {/* FIXME：套用兩個class其他方法？ */}
 
-        <AddBoxBtn
-          style={{
-            left: `${boxes.length * 310}px`,
-          }}
-          className="todo"
-          ref={btnRef}
-          onClick={handleCreateBox}
-        >
-          + Add another list
-        </AddBoxBtn>
+        {/* FIXME：套用兩個class其他方法？ */}
+        {!showInputBox && (
+          <AddBoxBtn
+            style={{
+              left: `${boxes.length * 310}px`,
+            }}
+            className="todo"
+            ref={btnRef}
+            onClick={handleAddBoxClick}
+          >
+            + Add another list
+          </AddBoxBtn>
+        )}
+
+        {showInputBox && <InputBox onClose={handleAddBoxClick} />}
       </div>
     </>
   );
