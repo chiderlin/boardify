@@ -1,4 +1,4 @@
-import React, { createContext, useState, useRef, useContext } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
 const BoxContext = createContext();
 export function BoxProvider({ children }) {

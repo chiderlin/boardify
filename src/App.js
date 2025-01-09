@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import InputBox from './CreateInputBox';
-import BoxList from './BoxList';
+import BoxListWrap from './BoxList';
 import { BoxProvider, useBoxContext } from './hook/BoxContext';
 import 'styled-components';
 import React from 'react';
@@ -47,7 +47,7 @@ function BoxComponent() {
           + Add another list
         </AddBoxBtn>
       )}
-      <BoxList />
+      <BoxListWrap />
       {showInputBox && <InputBox />}
     </>
   );
