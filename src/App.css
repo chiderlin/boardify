@@ -69,9 +69,10 @@ body {
 }
 
 .header {
-  height: 80px;
+  height: 50px;
   background-size: cover;
-  background-color: yellowgreen;
+  background-color: #e0e0e0;
+  opacity: 0.5;
   padding: 20px; /*本身內縮*/
   min-width: 100%;
 }
