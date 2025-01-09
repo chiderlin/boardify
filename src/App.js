@@ -13,16 +13,17 @@ const AddBoxBtn = styled.div`
   min-width: 300px;
   border-radius: 10px;
   background-color: #bebebe;
-  opacity: 0.8;
-  font-weight: bold;
+  opacity: 0.5;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  padding-left: 20px;
   cursor: pointer;
   position: absolute;
   left: 0;
   &:hover {
-    opacity: 0.5;
+    background-color: #adadad;
+    opacity: 0.3;
   }
 `;
 
