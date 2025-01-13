@@ -38,7 +38,8 @@ function AddCardWithClose({ boxId }) {
     if (btnRef.current) {
       const newTodo = {
         id: new Date().getTime(),
-        content: inputTodoValue,
+        title: inputTodoValue,
+        content: '',
       };
       setTodosByBox((prevTodos) => {
         const updatedTodos = prevTodos[boxId]
@@ -76,7 +77,8 @@ export default function InputToDo({ boxId }) {
     if (inputRef.current && e.key === 'Enter') {
       const newTodo = {
         id: new Date().getTime(),
-        content: inputTodoValue,
+        title: inputTodoValue,
+        content: '',
       };
       setTodosByBox((prevTodos) => {
         const updatedTodos = prevTodos[boxId]

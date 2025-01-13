@@ -13,7 +13,7 @@ const AddBoxBtn = styled.div`
   min-width: 300px;
   border-radius: 10px;
   background-color: #bebebe;
-  opacity: 0.5;
+  opacity: 0.8;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -23,7 +23,7 @@ const AddBoxBtn = styled.div`
   left: 0;
   &:hover {
     background-color: #adadad;
-    opacity: 0.3;
+    opacity: 0.5;
   }
 `;
 

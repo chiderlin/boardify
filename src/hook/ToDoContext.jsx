@@ -6,7 +6,7 @@ export function TodoProvider({ children }) {
   const [todosByBox, setTodosByBox] = useState({}); // object to track todos by box
   const [inputTodoValue, setInputTodoValue] = useState('');
   const [showTodoInputBox, setShowTodoInputBox] = useState(false);
-
+  const [showWindow, setShowWindow] = useState(false);
   return (
     <TodoContext.Provider
       value={{
@@ -16,6 +16,8 @@ export function TodoProvider({ children }) {
         setInputTodoValue,
         showTodoInputBox,
         setShowTodoInputBox,
+        showWindow,
+        setShowWindow,
       }}
     >
       {children}

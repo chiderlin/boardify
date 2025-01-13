@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import 'styled-components';
 import { useBoxContext } from './hook/BoxContext';
 import { TodoProvider, useTodoContext } from './hook/ToDoContext';
 import InputToDo from './InputToDo';
-
+import TodoWindow from './ToDoWindow';
 /*transform: ${(props) =>
   props.isDragging ? 'rotate(10deg)' : 'rotate(0deg);'};
   opacity: ${(props) => (props.isDragging ? '0.7' : '1')};
@@ -24,6 +24,7 @@ const Box = styled.div`
   margin: 10px;
 `;
 
+//TODO: text多於長度後，要自動換行，加高
 const TodoTask = styled.div`
   width: 90%;
   height: 30px;
@@ -81,11 +82,20 @@ const BoxNameBlock = styled.div`
 
 function BoxList() {
   const { boxes } = useBoxContext();
-  const { todosByBox, showTodoInputBox, setShowTodoInputBox } =
-    useTodoContext();
+  const {
+    todosByBox,
+    showTodoInputBox,
+    setShowTodoInputBox,
+    showWindow,
+    setShowWindow,
+  } = useTodoContext();
 
   const handleAddTasks = () => {
     setShowTodoInputBox(!showTodoInputBox);
+  };
+
+  const handleShowWindow = () => {
+    setShowWindow(!showWindow);
   };
 
   // TODO: 移動box
@@ -123,8 +133,11 @@ function BoxList() {
         };
        */}
       {todosByBox[box.id]?.map((todo) => (
-        <TodoTask key={todo.id}>{todo.content}</TodoTask>
+        <TodoTask onClick={handleShowWindow} key={todo.id}>
+          {todo.title}
+        </TodoTask>
       ))}
+      {showWindow && <TodoWindow></TodoWindow>}
       {/* FIXME: all box todoinput edited mode at the same time, should send, add a task應該要偵測是哪個box id, 只有那個box可以變todoinput  */}
       {showTodoInputBox && <InputToDo boxId={box.id} />}
       {!showTodoInputBox && (
