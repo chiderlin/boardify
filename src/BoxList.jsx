@@ -145,7 +145,6 @@ function BoxList() {
         </TodoTask>
       ))}
       {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
-      {/* FIXME: all box todoinput edited mode at the same time, should send, add a task應該要偵測是哪個box id, 只有那個box可以變todoinput  */}
       {showTodoInputBox && activeBoxId == box.id ? (
         <InputToDo boxId={box.id} />
       ) : (
