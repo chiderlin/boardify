@@ -7,6 +7,7 @@ export function TodoProvider({ children }) {
   const [inputTodoValue, setInputTodoValue] = useState('');
   const [showTodoInputBox, setShowTodoInputBox] = useState(false);
   const [showWindow, setShowWindow] = useState(false);
+  const [selectTodoIdx, setSelectTodoIdx] = useState({});
   return (
     <TodoContext.Provider
       value={{
@@ -18,6 +19,8 @@ export function TodoProvider({ children }) {
         setShowTodoInputBox,
         showWindow,
         setShowWindow,
+        selectTodoIdx,
+        setSelectTodoIdx,
       }}
     >
       {children}

@@ -88,13 +88,16 @@ function BoxList() {
     setShowTodoInputBox,
     showWindow,
     setShowWindow,
+    selectTodoIdx,
+    setSelectTodoIdx,
   } = useTodoContext();
 
   const handleAddTasks = () => {
     setShowTodoInputBox(!showTodoInputBox);
   };
 
-  const handleShowWindow = () => {
+  const handleShowWindow = ({ boxId, todoIdx }) => {
+    setSelectTodoIdx({ boxId, todoIdx });
     setShowWindow(!showWindow);
   };
 
@@ -128,16 +131,19 @@ function BoxList() {
       {/*    
         架構:
         const todosByBox = {
-          box1: [{ id: 1, content: '任務 1' }, { id: 2, content: '任務 2' }],
-          box2: [{ id: 3, content: '任務 3' }],
+          box1: [{ id: 1, title: '任務 1' }, { id: 2, title: '任務 2' }],
+          box2: [{ id: 3, title: '任務 3' }],
         };
        */}
-      {todosByBox[box.id]?.map((todo) => (
-        <TodoTask onClick={handleShowWindow} key={todo.id}>
+      {todosByBox[box.id]?.map((todo, idx) => (
+        <TodoTask
+          onClick={() => handleShowWindow({ boxId: box.id, todoIdx: idx })}
+          key={idx}
+        >
           {todo.title}
         </TodoTask>
       ))}
-      {showWindow && <TodoWindow></TodoWindow>}
+      {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
       {/* FIXME: all box todoinput edited mode at the same time, should send, add a task應該要偵測是哪個box id, 只有那個box可以變todoinput  */}
       {showTodoInputBox && <InputToDo boxId={box.id} />}
       {!showTodoInputBox && (

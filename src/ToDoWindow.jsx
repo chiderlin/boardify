@@ -30,8 +30,11 @@ const Window = styled.div`
   justify-content: center;
 `;
 
-export default function TodoWindow() {
-  const { showWindow, setShowWindow } = useTodoContext();
+export default function TodoWindow({ todoObj }) {
+  console.log(todoObj);
+  const { todosByBox, showWindow, setShowWindow } = useTodoContext();
+  const { boxId, todoIdx } = todoObj;
+
   const closeWindow = () => {
     setShowWindow(!showWindow);
   };
@@ -58,7 +61,7 @@ export default function TodoWindow() {
   return (
     <Overlay>
       <Window onKeyDown={closeWindow}>
-        test
+        {todosByBox[boxId][todoIdx].title}
         <CloseBtn onClick={closeWindow}>
           <FontAwesomeIcon icon={faTimes} />
         </CloseBtn>
