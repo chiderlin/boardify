@@ -81,7 +81,7 @@ const BoxNameBlock = styled.div`
 `;
 
 function BoxList() {
-  const { boxes } = useBoxContext();
+  const { boxes, activeBoxId, setActiveBoxId } = useBoxContext();
   const {
     todosByBox,
     showTodoInputBox,
@@ -92,7 +92,8 @@ function BoxList() {
     setSelectTodoIdx,
   } = useTodoContext();
 
-  const handleAddTasks = () => {
+  const handleAddTasks = (boxId) => {
+    setActiveBoxId(boxId);
     setShowTodoInputBox(!showTodoInputBox);
   };
 
@@ -145,9 +146,12 @@ function BoxList() {
       ))}
       {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
       {/* FIXME: all box todoinput edited mode at the same time, should send, add a task應該要偵測是哪個box id, 只有那個box可以變todoinput  */}
-      {showTodoInputBox && <InputToDo boxId={box.id} />}
-      {!showTodoInputBox && (
-        <AddATaskBtn onClick={() => handleAddTasks()}>+ Add a Task</AddATaskBtn>
+      {showTodoInputBox && activeBoxId == box.id ? (
+        <InputToDo boxId={box.id} />
+      ) : (
+        <AddATaskBtn onClick={() => handleAddTasks(box.id)}>
+          + Add a Task
+        </AddATaskBtn>
       )}
     </Box>
   ));
