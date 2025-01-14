@@ -24,7 +24,6 @@ const Box = styled.div`
   margin: 10px;
 `;
 
-//TODO: text多於長度後，要自動換行，加高
 const TodoTask = styled.div`
   width: 260px;
   min-height: 30px;
