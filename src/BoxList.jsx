@@ -26,8 +26,9 @@ const Box = styled.div`
 
 //TODO: text多於長度後，要自動換行，加高
 const TodoTask = styled.div`
-  width: 90%;
-  height: 30px;
+  width: 260px;
+  min-height: 30px;
+  height: auto;
   background-color: white;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   border: 1px solid #e0e0e0;
@@ -38,6 +39,9 @@ const TodoTask = styled.div`
   align-items: center;
   margin: 10px;
   flex-grow: 0;
+  word-break: break-word; // next line if text too long
+  overflow-wrap: break-word; // next line if text too long
+  padding: 10px;
   &:hover {
     outline: 1px solid #0072e3;
     cursor: pointer;
