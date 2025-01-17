@@ -108,18 +108,6 @@ function BoxList() {
     setShowWindow(!showWindow);
   };
 
-  // const onMouseDown = (e, bid) => {
-  //   console.log('bid: ', bid);
-  //   setIsDragging(true);
-  //   console.log('e.clientX:', e.clientX);
-  //   console.log('e.clientY', e.clientY);
-  //   setOffset({
-  //     x: e.clientX - position.x,
-  //     y: e.clientY - position.y,
-  //   });
-  //   setDraggingBoxId(bid);
-  // };
-
   const onDragEnd = (result) => {
     console.log(result);
     const { source, destination } = result;
@@ -149,7 +137,6 @@ function BoxList() {
         <Droppable droppableId={box.id.toString()} key={box.id}>
           {(provided) => (
             <Box
-              // onMouseDown={(e) => onMouseDown(e, box.id)}
               key={box.id}
               x={box.x}
               y={box.y}
