@@ -153,28 +153,6 @@ function BoxList() {
     setShowWindow(!showWindow);
   };
 
-  // const onDragEnd = (result) => {
-  //   const { source, destination } = result;
-  //   if (!destination) return;
-
-  //   const sourceBoxId = source.droppableId;
-  //   const destinationBoxId = destination.droppableId;
-
-  //   if (
-  //     sourceBoxId === destinationBoxId &&
-  //     source.index === destination.index
-  //   ) {
-  //     return;
-  //   }
-
-  //   const updatedTodos = { ...todosByBox };
-
-  //   const [movedTodo] = updatedTodos[sourceBoxId].splice(source.index, 1);
-  //   updatedTodos[destinationBoxId].splice(destination.index, 0, movedTodo);
-
-  //   setTodosByBox(updatedTodos);
-  // };
-
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor),
