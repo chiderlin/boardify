@@ -6,6 +6,23 @@ import { TodoProvider, useTodoContext } from './hook/ToDoContext';
 import InputToDo from './InputToDo';
 import TodoWindow from './ToDoWindow';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+} from '@dnd-kit/sortable';
+
+import { CSS } from '@dnd-kit/utilities';
 
 /*transform: ${(props) =>
   props.isDragging ? 'rotate(10deg)' : 'rotate(0deg);'};
@@ -25,7 +42,6 @@ const Box = styled.div`
   height: auto;
   margin: 10px;
 `;
-
 const TodoTask = styled.div`
   width: 260px;
   min-height: 30px;
@@ -85,6 +101,35 @@ const BoxNameBlock = styled.div`
   flex-grow: 0;
 `;
 
+function SortableTask({ id, title, onClick }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.7 : 1,
+  };
+
+  return (
+    <TodoTask
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onClick={onClick}
+    >
+      {title}
+    </TodoTask>
+  );
+}
+
 function BoxList() {
   const { boxes, activeBoxId, setActiveBoxId } = useBoxContext();
   const {
@@ -108,92 +153,103 @@ function BoxList() {
     setShowWindow(!showWindow);
   };
 
-  const onDragEnd = (result) => {
-    console.log(result);
-    const { source, destination } = result;
-    if (!destination) return;
+  // const onDragEnd = (result) => {
+  //   const { source, destination } = result;
+  //   if (!destination) return;
 
-    const sourceBoxId = source.droppableId;
-    const destinationBoxId = destination.droppableId;
+  //   const sourceBoxId = source.droppableId;
+  //   const destinationBoxId = destination.droppableId;
 
-    if (
-      sourceBoxId === destinationBoxId &&
-      source.index === destination.index
-    ) {
-      return;
+  //   if (
+  //     sourceBoxId === destinationBoxId &&
+  //     source.index === destination.index
+  //   ) {
+  //     return;
+  //   }
+
+  //   const updatedTodos = { ...todosByBox };
+
+  //   const [movedTodo] = updatedTodos[sourceBoxId].splice(source.index, 1);
+  //   updatedTodos[destinationBoxId].splice(destination.index, 0, movedTodo);
+
+  //   setTodosByBox(updatedTodos);
+  // };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor),
+    {
+      coordinateGetter: sortableKeyboardCoordinates,
     }
+  );
 
-    const updatedTodos = { ...todosByBox };
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id == over.id) return;
 
-    const [movedTodo] = updatedTodos[sourceBoxId].splice(source.index, 1);
-    updatedTodos[destinationBoxId].splice(destination.index, 0, movedTodo);
+    const activeBoxId = Object.keys(todosByBox).find((boxId) =>
+      todosByBox[boxId].some((todo) => todo.id === active.id)
+    );
 
-    setTodosByBox(updatedTodos);
+    const overBoxId = Object.keys(todosByBox).find((boxId) =>
+      todosByBox[boxId].some((todo) => todo.id === over.id)
+    );
+
+    if (activeBoxId === overBoxId) {
+      const updatedTodos = {
+        ...todosByBox,
+        [activeBoxId]: arrayMove(
+          todosByBox[activeBoxId],
+          todosByBox[activeBoxId].findIndex((todo) => todo.id === active.id),
+          todosByBox[activeBoxId].findIndex((todo) => todo.id === over.id)
+        ),
+      };
+      setTodosByBox(updatedTodos);
+    }
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      {boxes.map((box, index) => (
-        <Droppable droppableId={box.id.toString()} key={box.id}>
-          {(provided) => (
-            <Box
-              key={box.id}
-              x={box.x}
-              y={box.y}
-              style={{
-                position: 'absolute',
-                left: `${(box.id - 1) * 310}px`,
-              }}
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              <BoxNameBlock>
-                <BoxName>{box.name}</BoxName>
-              </BoxNameBlock>
-              {/*    
-                架構:
-                const todosByBox = {
-                  box1: [{ id: 1, title: '任務 1' }, { id: 2, title: '任務 2' }],
-                  box2: [{ id: 3, title: '任務 3' }],
-                };
-            */}
-
-              {todosByBox[box.id]?.map((todo, idx) => (
-                <Draggable
-                  key={todo.id}
-                  draggableId={todo.id.toString()}
-                  index={idx}
-                >
-                  {(provided, snapshot) => (
-                    <TodoTask
-                      onClick={() =>
-                        handleShowWindow({ boxId: box.id, todoIdx: idx })
-                      }
-                      key={idx}
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      isDragging={snapshot.isDragging}
-                    >
-                      {todo.title}
-                    </TodoTask>
-                  )}
-                </Draggable>
-              ))}
-              {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
-              {showTodoInputBox && activeBoxId == box.id ? (
-                <InputToDo boxId={box.id} />
-              ) : (
-                <AddATaskBtn onClick={() => handleAddTasks(box.id)}>
-                  + Add a Task
-                </AddATaskBtn>
-              )}
-              {provided.placeholder}
-            </Box>
+    <DndContext
+      // sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      {boxes.map((box) => (
+        <Box
+          key={box.id}
+          style={{
+            position: 'absolute',
+            left: `${(box.id - 1) * 310}px`,
+          }}
+        >
+          <BoxNameBlock>
+            <BoxName>{box.name}</BoxName>
+          </BoxNameBlock>
+          <SortableContext
+            items={todosByBox[box.id]?.map((todo) => todo.id) || []}
+          >
+            {todosByBox[box.id]?.map((todo, idx) => (
+              <SortableTask
+                key={todo.id}
+                id={todo.id}
+                title={todo.title}
+                onClick={() =>
+                  handleShowWindow({ boxId: box.id, todoIdx: idx })
+                }
+              />
+            ))}
+          </SortableContext>
+          {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
+          {showTodoInputBox && activeBoxId == box.id ? (
+            <InputToDo boxId={box.id} />
+          ) : (
+            <AddATaskBtn onClick={() => handleAddTasks(box.id)}>
+              + Add a Task
+            </AddATaskBtn>
           )}
-        </Droppable>
+        </Box>
       ))}
-    </DragDropContext>
+    </DndContext>
   );
 }
 
