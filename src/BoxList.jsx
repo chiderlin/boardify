@@ -1,34 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import 'styled-components';
 import { useBoxContext } from './hook/BoxContext';
 import { TodoProvider, useTodoContext } from './hook/ToDoContext';
 import InputToDo from './InputToDo';
 import TodoWindow from './ToDoWindow';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
+import { DndContext, closestCenter } from '@dnd-kit/core';
 
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-} from '@dnd-kit/sortable';
+import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 
 import { CSS } from '@dnd-kit/utilities';
-
-/*transform: ${(props) =>
-  props.isDragging ? 'rotate(10deg)' : 'rotate(0deg);'};
-  opacity: ${(props) => (props.isDragging ? '0.7' : '1')};
-  cursor: ${(props) => (props.isDragging ? 'default' : 'pointer')};
-*/
 
 const Box = styled.div`
   min-width: 300px;
@@ -153,14 +134,6 @@ function BoxList() {
     setShowWindow(!showWindow);
   };
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor),
-    {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }
-  );
-
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id == over.id) return;
@@ -187,11 +160,7 @@ function BoxList() {
   };
 
   return (
-    <DndContext
-      // sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
+    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       {boxes.map((box) => (
         <Box
           key={box.id}

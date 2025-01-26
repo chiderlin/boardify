@@ -1,7 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
 import InputBox from './CreateInputBox';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import BoxListWrap from './BoxList';
 import { BoxProvider, useBoxContext } from './hook/BoxContext';
 import 'styled-components';
@@ -49,7 +48,6 @@ function BoxComponent() {
           + Add another list
         </AddBoxBtn>
       )}
-      {/* FIXME:how to use react-beautiful-dnd */}
       <BoxListWrap />
       {showInputBox && <InputBox />}
     </>
