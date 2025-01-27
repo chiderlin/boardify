@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Children } from 'react';
 import styled from 'styled-components';
 import 'styled-components';
 import { useBoxContext } from './hook/BoxContext';
@@ -111,8 +111,36 @@ function SortableTask({ id, title, onClick }) {
   );
 }
 
+function SortableBox({ id, name }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.7 : 1,
+  };
+
+  return (
+    <Box
+      ref={setNodeRef}
+      key={id}
+      style={{ ...style, position: 'absolute', left: `${(id - 1) * 310}px` }}
+      {...attributes}
+      {...listeners}
+    >
+      {name}
+    </Box>
+  );
+}
+
 function BoxList() {
-  const { boxes, activeBoxId, setActiveBoxId } = useBoxContext();
+  const { boxes, setBoxes, activeBoxId, setActiveBoxId } = useBoxContext();
   const {
     todosByBox,
     showTodoInputBox,
@@ -136,8 +164,23 @@ function BoxList() {
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
+    // console.log('boxes: ', boxes);
+    // console.log('over: ', over);
+    // console.log('active: ', active);
     if (!over || active.id == over.id) return;
 
+    // check if it's a box being dragged
+    if (boxes.some((box) => box.id === active.id)) {
+      const activeIndex = boxes.findIndex((box) => box.id === active.id);
+      const overIndex = boxes.findIndex((box) => box.id === over.id);
+
+      // Reorder the boxes
+      const updateBoxes = arrayMove(boxes, activeIndex, overIndex);
+      setBoxes(updateBoxes);
+      return;
+    }
+
+    // check if it's a task being dragged
     const activeBoxId = Object.keys(todosByBox).find((boxId) =>
       todosByBox[boxId].some((todo) => todo.id === active.id)
     );
@@ -156,46 +199,62 @@ function BoxList() {
         ),
       };
       setTodosByBox(updatedTodos);
+    } else if (activeBoxId && overBoxId) {
+      // Move task from one box to another
+      const activeTaskIndex = todosByBox[activeBoxId].findIndex(
+        (todo) => todo.id === active.id
+      );
+      const [movedTask] = todosByBox[activeBoxId].splice(activeTaskIndex, 1);
+      const updateTodos = {
+        ...todosByBox,
+        [activeBoxId]: [...todosByBox[activeBoxId]],
+        [overBoxId]: [...todosByBox[overBoxId], movedTask],
+      };
+      setTodosByBox(updateTodos);
     }
   };
 
+  //FIXME: recovery box style & todos functionality
+  // replace <Box />
+  // <SortableBox key={box.id} id={box.id} name={box.name}>
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      {boxes.map((box) => (
-        <Box
-          key={box.id}
-          style={{
-            position: 'absolute',
-            left: `${(box.id - 1) * 310}px`,
-          }}
-        >
-          <BoxNameBlock>
-            <BoxName>{box.name}</BoxName>
-          </BoxNameBlock>
-          <SortableContext
-            items={todosByBox[box.id]?.map((todo) => todo.id) || []}
+      <SortableContext items={boxes[0] ? boxes : []}>
+        {boxes.map((box) => (
+          <Box
+            key={box.id}
+            style={{ position: 'absolute', left: `${(box.id - 1) * 310}px` }}
+            id={box.id}
           >
-            {todosByBox[box.id]?.map((todo, idx) => (
-              <SortableTask
-                key={todo.id}
-                id={todo.id}
-                title={todo.title}
-                onClick={() =>
-                  handleShowWindow({ boxId: box.id, todoIdx: idx })
-                }
-              />
-            ))}
-          </SortableContext>
-          {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
-          {showTodoInputBox && activeBoxId == box.id ? (
-            <InputToDo boxId={box.id} />
-          ) : (
-            <AddATaskBtn onClick={() => handleAddTasks(box.id)}>
-              + Add a Task
-            </AddATaskBtn>
-          )}
-        </Box>
-      ))}
+            <BoxNameBlock>
+              <BoxName>{box.name}</BoxName>
+            </BoxNameBlock>
+            <SortableContext
+              items={todosByBox[box.id]?.map((todo) => todo.id) || []}
+            >
+              {todosByBox[box.id]?.map((todo, idx) => (
+                <SortableTask
+                  key={todo.id}
+                  id={todo.id}
+                  title={todo.title}
+                  onClick={() =>
+                    handleShowWindow({ boxId: box.id, todoIdx: idx })
+                  }
+                />
+              ))}
+            </SortableContext>
+            {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
+            {showTodoInputBox && activeBoxId == box.id ? (
+              <InputToDo boxId={box.id} />
+            ) : (
+              <AddATaskBtn onClick={() => handleAddTasks(box.id)}>
+                + Add a Task
+              </AddATaskBtn>
+            )}
+            {/* </SortableBox> */}
+          </Box>
+        ))}
+      </SortableContext>
     </DndContext>
   );
 }
