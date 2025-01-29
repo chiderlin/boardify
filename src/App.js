@@ -40,7 +40,7 @@ function BoxComponent() {
       {!showInputBox && (
         <AddBoxBtn
           style={{
-            left: `${boxes.length * 310}px`,
+            left: `${boxes.length * 330}px`,
           }}
           className="todo"
           onClick={handleAddBoxClick}

@@ -111,7 +111,7 @@ function SortableTask({ id, title, onClick }) {
   );
 }
 
-function SortableBox({ id, name }) {
+function SortableBox({ id, children, style }) {
   const {
     attributes,
     listeners,
@@ -120,22 +120,28 @@ function SortableBox({ id, name }) {
     transition,
     isDragging,
   } = useSortable({ id });
-  const style = {
+  const sortableStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.7 : 1,
+    ...style,
   };
 
+  // return (
+  //   <Box
+  //     ref={setNodeRef}
+  //     key={id}
+  //     style={{ ...style, position: 'absolute', left: `${(id - 1) * 310}px` }}
+  //     {...attributes}
+  //     {...listeners}
+  //   >
+  //     {children}
+  //   </Box>
+  // );
   return (
-    <Box
-      ref={setNodeRef}
-      key={id}
-      style={{ ...style, position: 'absolute', left: `${(id - 1) * 310}px` }}
-      {...attributes}
-      {...listeners}
-    >
-      {name}
-    </Box>
+    <div ref={setNodeRef} style={sortableStyle} {...attributes} {...listeners}>
+      {children}
+    </div>
   );
 }
 
@@ -214,45 +220,43 @@ function BoxList() {
     }
   };
 
-  //FIXME: recovery box style & todos functionality
-  // replace <Box />
-  // <SortableBox key={box.id} id={box.id} name={box.name}>
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={boxes[0] ? boxes : []}>
         {boxes.map((box) => (
-          <Box
+          <SortableBox
             key={box.id}
-            style={{ position: 'absolute', left: `${(box.id - 1) * 310}px` }}
             id={box.id}
+            style={{ left: `${(box.id - 1) * 310}px` }} // cannot use position absolute here, to avoid couldn't move
           >
-            <BoxNameBlock>
-              <BoxName>{box.name}</BoxName>
-            </BoxNameBlock>
-            <SortableContext
-              items={todosByBox[box.id]?.map((todo) => todo.id) || []}
-            >
-              {todosByBox[box.id]?.map((todo, idx) => (
-                <SortableTask
-                  key={todo.id}
-                  id={todo.id}
-                  title={todo.title}
-                  onClick={() =>
-                    handleShowWindow({ boxId: box.id, todoIdx: idx })
-                  }
-                />
-              ))}
-            </SortableContext>
-            {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
-            {showTodoInputBox && activeBoxId == box.id ? (
-              <InputToDo boxId={box.id} />
-            ) : (
-              <AddATaskBtn onClick={() => handleAddTasks(box.id)}>
-                + Add a Task
-              </AddATaskBtn>
-            )}
-            {/* </SortableBox> */}
-          </Box>
+            <Box>
+              <BoxNameBlock>
+                <BoxName>{box.name}</BoxName>
+              </BoxNameBlock>
+              <SortableContext
+                items={todosByBox[box.id]?.map((todo) => todo.id) || []}
+              >
+                {todosByBox[box.id]?.map((todo, idx) => (
+                  <SortableTask
+                    key={todo.id}
+                    id={todo.id}
+                    title={todo.title}
+                    onClick={() =>
+                      handleShowWindow({ boxId: box.id, todoIdx: idx })
+                    }
+                  />
+                ))}
+              </SortableContext>
+              {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
+              {showTodoInputBox && activeBoxId == box.id ? (
+                <InputToDo boxId={box.id} />
+              ) : (
+                <AddATaskBtn onClick={() => handleAddTasks(box.id)}>
+                  + Add a Task
+                </AddATaskBtn>
+              )}
+            </Box>
+          </SortableBox>
         ))}
       </SortableContext>
     </DndContext>

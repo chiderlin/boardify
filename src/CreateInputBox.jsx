@@ -103,7 +103,7 @@ export default function CreateInputBox() {
   return (
     <BoxNaming
       style={{
-        left: `${boxes.length * 310}px`,
+        left: `${boxes.length * 330}px`,
       }}
     >
       <Input
