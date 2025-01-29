@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTodoContext } from './hook/ToDoContext';
 import styled from 'styled-components';
 import 'styled-components';
@@ -49,6 +49,10 @@ function AddCardWithClose({ boxId }) {
       });
       setInputTodoValue('');
       setShowTodoInputBox(!showTodoInputBox);
+      // setShowTodoInputBox((prev) => ({
+      //   ...prev,
+      //   [boxId]: !prev[boxId],
+      // }));
     }
   };
   return (
@@ -56,7 +60,15 @@ function AddCardWithClose({ boxId }) {
       <ConfirmBtn ref={btnRef} onClick={handleCreateTodo}>
         Add Card
       </ConfirmBtn>
-      <CloseBtn onClick={() => setShowTodoInputBox(false)}>
+      <CloseBtn
+        onClick={() => {
+          setShowTodoInputBox(false);
+          // setShowTodoInputBox((prev) => ({
+          //   ...prev,
+          //   [boxId]: !prev[boxId],
+          // }));
+        }}
+      >
         <FontAwesomeIcon icon={faTimes} />
       </CloseBtn>
     </AddCardContainer>
@@ -73,25 +85,70 @@ export default function InputToDo({ boxId }) {
     setShowTodoInputBox,
   } = useTodoContext();
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (showTodoInputBox[boxId] && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showTodoInputBox, boxId]);
+
+  // const handleKeyPress = (e) => {
+  //   if (inputRef.current && e.key === 'Enter') {
+  //     const newTodo = {
+  //       id: new Date().getTime(),
+  //       title: inputTodoValue,
+  //       content: '',
+  //     };
+  //     setTodosByBox((prevTodos) => {
+  //       const updatedTodos = prevTodos[boxId]
+  //         ? [...prevTodos[boxId], newTodo]
+  //         : [newTodo];
+  //       return { ...prevTodos, [boxId]: updatedTodos };
+  //     });
+  //     setInputTodoValue('');
+  //     // setShowTodoInputBox(!showTodoInputBox);
+  //     setShowTodoInputBox((prev) => ({
+  //       ...prev,
+  //       [boxId]: !prev[boxId],
+  //     }));
+  //   }
+  // };
+
   const handleKeyPress = (e) => {
-    if (inputRef.current && e.key === 'Enter') {
+    if (e.key === 'Enter') {
       const newTodo = {
         id: new Date().getTime(),
         title: inputTodoValue,
         content: '',
       };
-      setTodosByBox((prevTodos) => {
-        const updatedTodos = prevTodos[boxId]
-          ? [...prevTodos[boxId], newTodo]
-          : [newTodo];
-        return { ...prevTodos, [boxId]: updatedTodos };
-      });
+
+      setTodosByBox((prevTodos) => ({
+        ...prevTodos,
+        [boxId]: prevTodos[boxId] ? [...prevTodos[boxId], newTodo] : [newTodo],
+      }));
       setInputTodoValue('');
       setShowTodoInputBox(!showTodoInputBox);
+      // setShowTodoInputBox((prevState) => ({
+      //   ...prevState,
+      //   [boxId]: !prevState[boxId],
+      // }));
     }
   };
 
-  return (
+  // return (
+  //   <>
+  //     <InputTodo
+  //       type="text"
+  //       value={inputTodoValue}
+  //       onChange={(e) => setInputTodoValue(e.target.value)}
+  //       ref={inputRef}
+  //       onKeyDown={handleKeyPress}
+  //       placeholder="Enter a title or paste a link"
+  //     />
+  //     <AddCardWithClose boxId={boxId} />
+  //   </>
+  // );
+  return showTodoInputBox[boxId] ? (
     <>
       <InputTodo
         type="text"
@@ -103,5 +160,5 @@ export default function InputToDo({ boxId }) {
       />
       <AddCardWithClose boxId={boxId} />
     </>
-  );
+  ) : null;
 }

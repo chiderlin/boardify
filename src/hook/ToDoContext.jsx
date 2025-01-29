@@ -6,6 +6,8 @@ export function TodoProvider({ children }) {
   const [todosByBox, setTodosByBox] = useState({}); // object to track todos by box
   const [inputTodoValue, setInputTodoValue] = useState('');
   const [showTodoInputBox, setShowTodoInputBox] = useState(false);
+  // const [showTodoInputBox, setShowTodoInputBox] = useState({});
+
   const [showWindow, setShowWindow] = useState(false);
   const [selectTodoIdx, setSelectTodoIdx] = useState({});
   return (

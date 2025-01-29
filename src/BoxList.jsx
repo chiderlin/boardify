@@ -127,17 +127,6 @@ function SortableBox({ id, children, style }) {
     ...style,
   };
 
-  // return (
-  //   <Box
-  //     ref={setNodeRef}
-  //     key={id}
-  //     style={{ ...style, position: 'absolute', left: `${(id - 1) * 310}px` }}
-  //     {...attributes}
-  //     {...listeners}
-  //   >
-  //     {children}
-  //   </Box>
-  // );
   return (
     <div ref={setNodeRef} style={sortableStyle} {...attributes} {...listeners}>
       {children}
@@ -160,7 +149,11 @@ function BoxList() {
 
   const handleAddTasks = (boxId) => {
     setActiveBoxId(boxId);
-    setShowTodoInputBox(!showTodoInputBox);
+    // setShowTodoInputBox(!showTodoInputBox);
+    setShowTodoInputBox((prev) => ({
+      ...prev,
+      [boxId]: !prev[boxId],
+    }));
   };
 
   const handleShowWindow = ({ boxId, todoIdx }) => {
@@ -248,13 +241,33 @@ function BoxList() {
                 ))}
               </SortableContext>
               {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
+              {/* FIXME: error when adding a new task.. (1.why enter is a must to activate box?  2. why addCard & closeBtn not working?)  */}
               {showTodoInputBox && activeBoxId == box.id ? (
-                <InputToDo boxId={box.id} />
+                <InputToDo
+                  boxId={box.id}
+                  onPointerDown={(e) => e.stopPropagation()}
+                />
               ) : (
-                <AddATaskBtn onClick={() => handleAddTasks(box.id)}>
+                <AddATaskBtn
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={() => handleAddTasks(box.id)}
+                >
                   + Add a Task
                 </AddATaskBtn>
               )}
+              {/* {showTodoInputBox[box.id] ? (
+                <InputToDo
+                  boxId={box.id}
+                  // onPointerDown={(e) => e.stopPropagation()}
+                />
+              ) : (
+                <AddATaskBtn
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={() => handleAddTasks(box.id)}
+                >
+                  + Add a Task
+                </AddATaskBtn>
+              )} */}
             </Box>
           </SortableBox>
         ))}
