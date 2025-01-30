@@ -242,7 +242,6 @@ function BoxList() {
                 ))}
               </SortableContext>
               {showWindow && <TodoWindow todoObj={selectTodoIdx}></TodoWindow>}
-              {/* FIXME: error when adding a new task.. (1.why enter is a must to activate box?  2. why addCard & closeBtn not working?)  */}
               {showTodoInputBox && activeBoxId == box.id ? (
                 <InputToDo
                   boxId={box.id}
