@@ -70,9 +70,9 @@ const AddATaskBtn = styled.div`
 const BoxName = styled.h3`
   color: black;
 `;
-
+// width: 90%;
 const BoxNameBlock = styled.div`
-  width: 90%;
+  width: 260px;
   height: 50px;
   padding-left: 15px;
   border-radius: 5px;
@@ -111,7 +111,7 @@ function SortableTask({ id, title, onClick }) {
   );
 }
 
-function SortableBox({ id, children, style }) {
+function SortableBox({ id, children, style, disableDrag }) {
   const {
     attributes,
     listeners,
@@ -119,7 +119,7 @@ function SortableBox({ id, children, style }) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id, disabled: disableDrag });
   const sortableStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -221,6 +221,7 @@ function BoxList() {
             key={box.id}
             id={box.id}
             style={{ left: `${(box.id - 1) * 310}px` }} // cannot use position absolute here, to avoid couldn't move
+            disableDrag={showTodoInputBox && activeBoxId === box.id}
           >
             <Box>
               <BoxNameBlock>
