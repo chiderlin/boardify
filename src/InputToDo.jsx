@@ -49,10 +49,6 @@ function AddCardWithClose({ boxId }) {
       });
       setInputTodoValue('');
       setShowTodoInputBox(!showTodoInputBox);
-      // setShowTodoInputBox((prev) => ({
-      //   ...prev,
-      //   [boxId]: !prev[boxId],
-      // }));
     }
   };
   return (
@@ -63,10 +59,6 @@ function AddCardWithClose({ boxId }) {
       <CloseBtn
         onClick={() => {
           setShowTodoInputBox(false);
-          // setShowTodoInputBox((prev) => ({
-          //   ...prev,
-          //   [boxId]: !prev[boxId],
-          // }));
         }}
       >
         <FontAwesomeIcon icon={faTimes} />
@@ -92,28 +84,6 @@ export default function InputToDo({ boxId }) {
     }
   }, [showTodoInputBox, boxId]);
 
-  // const handleKeyPress = (e) => {
-  //   if (inputRef.current && e.key === 'Enter') {
-  //     const newTodo = {
-  //       id: new Date().getTime(),
-  //       title: inputTodoValue,
-  //       content: '',
-  //     };
-  //     setTodosByBox((prevTodos) => {
-  //       const updatedTodos = prevTodos[boxId]
-  //         ? [...prevTodos[boxId], newTodo]
-  //         : [newTodo];
-  //       return { ...prevTodos, [boxId]: updatedTodos };
-  //     });
-  //     setInputTodoValue('');
-  //     // setShowTodoInputBox(!showTodoInputBox);
-  //     setShowTodoInputBox((prev) => ({
-  //       ...prev,
-  //       [boxId]: !prev[boxId],
-  //     }));
-  //   }
-  // };
-
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       const newTodo = {
@@ -128,27 +98,10 @@ export default function InputToDo({ boxId }) {
       }));
       setInputTodoValue('');
       setShowTodoInputBox(!showTodoInputBox);
-      // setShowTodoInputBox((prevState) => ({
-      //   ...prevState,
-      //   [boxId]: !prevState[boxId],
-      // }));
     }
   };
 
-  // return (
-  //   <>
-  //     <InputTodo
-  //       type="text"
-  //       value={inputTodoValue}
-  //       onChange={(e) => setInputTodoValue(e.target.value)}
-  //       ref={inputRef}
-  //       onKeyDown={handleKeyPress}
-  //       placeholder="Enter a title or paste a link"
-  //     />
-  //     <AddCardWithClose boxId={boxId} />
-  //   </>
-  // );
-  return showTodoInputBox[boxId] ? (
+  return (
     <>
       <InputTodo
         type="text"
@@ -160,5 +113,5 @@ export default function InputToDo({ boxId }) {
       />
       <AddCardWithClose boxId={boxId} />
     </>
-  ) : null;
+  );
 }

@@ -70,9 +70,9 @@ const AddATaskBtn = styled.div`
 const BoxName = styled.h3`
   color: black;
 `;
-// width: 90%;
+
 const BoxNameBlock = styled.div`
-  width: 260px;
+  width: 90%;
   height: 50px;
   padding-left: 15px;
   border-radius: 5px;
@@ -255,19 +255,6 @@ function BoxList() {
                   + Add a Task
                 </AddATaskBtn>
               )}
-              {/* {showTodoInputBox[box.id] ? (
-                <InputToDo
-                  boxId={box.id}
-                  // onPointerDown={(e) => e.stopPropagation()}
-                />
-              ) : (
-                <AddATaskBtn
-                  onPointerDown={(e) => e.stopPropagation()}
-                  onClick={() => handleAddTasks(box.id)}
-                >
-                  + Add a Task
-                </AddATaskBtn>
-              )} */}
             </Box>
           </SortableBox>
         ))}
